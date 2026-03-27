@@ -16,7 +16,6 @@ export class ApiService {
     return this.http.post(`${this.baseUrl}/usuario/login`, data);
   }
 
-  // ✨ Función interna para enviar headers con token
   private authHeaders() {
     const token = localStorage.getItem('token');
     return {
@@ -41,12 +40,12 @@ export class ApiService {
     return this.http.put(`${this.baseUrl}/ticket/${id}`, ticket, this.authHeaders());
   }
 
-  // ❌ ELIMINAR TICKET con token
+  // ❌ ELIMINAR TICKET
   deleteTicket(id: number) {
     return this.http.delete(`${this.baseUrl}/ticket/${id}`, this.authHeaders());
   }
 
-  // 🧑‍💻 REGISTRAR USUARIO (si requiere token para admin)
+  // 🧑‍💻 REGISTRAR USUARIO
   register(data: any) {
     return this.http.post(`${this.baseUrl}/usuario/register`, data, this.authHeaders());
   }

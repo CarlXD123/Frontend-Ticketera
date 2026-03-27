@@ -16,7 +16,6 @@ export class TopbarComponent implements OnInit {
     avatar: ''
   };
 
-  // 🔽 estado del menú
   menuOpen = false;
 
   constructor(private router: Router) {}
@@ -25,12 +24,11 @@ export class TopbarComponent implements OnInit {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      // ❌ No hay token → ir al login
       this.router.navigate(['/']);
       return;
     }
 
-    // ⚡ Decodificar JWT
+    // Decodificar JWT
     const payload = this.parseJwt(token);
     const username = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Usuario';
     const firstLetter = username.charAt(0).toUpperCase();
@@ -51,21 +49,21 @@ export class TopbarComponent implements OnInit {
     }
   }
 
-  // 🔘 abrir/cerrar menú
+  // abrir/cerrar menú
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
 
-  // ➕ ir a registro
+  // ir a registro
   goToRegister() {
     this.menuOpen = false;
     this.router.navigate(['/register']);
   }
 
-  // 🚪 logout
+  // logout
   logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('username'); // opcional, limpiar nombre
+    localStorage.removeItem('username');
     this.router.navigate(['/']);
     this.menuOpen = false;
   }

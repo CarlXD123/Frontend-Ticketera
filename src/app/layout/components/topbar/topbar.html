@@ -1,20 +1,16 @@
 <div class="topbar">
 
-  <!-- IZQUIERDA -->
   <div class="topbar-left">
     <span class="logo">🗂️ Ticketera virtual</span>
   </div>
 
-  <!-- DERECHA -->
   <div class="topbar-right">
 
-    <!-- ⚙️ BOTÓN PARA TOGGLE -->
     <div class="menu-container">
       <button class="icon-btn" (click)="toggleMenu()">⚙️</button>
 
-      <!-- DROPDOWN -->
       <div class="dropdown" *ngIf="menuOpen">
-        <!-- Solo mostrar si NO estamos en /tasks -->
+  
         <button *ngIf="showTasksButton()" (click)="goToTasks()">📋 Volver al tablero</button>
 
         <!-- Botón Crear usuario -->

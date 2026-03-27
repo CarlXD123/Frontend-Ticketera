@@ -46,21 +46,21 @@ export class TicketCreate {
     if (!this.ticket.titulo || !this.ticket.responsableId) return;
 
     this.loading = true;
-    this.mostrarToast('Creando ticket…', 'success'); // mensaje inmediato
-    this.cd.detectChanges(); // ⬅ forzar UI a actualizar
+    this.mostrarToast('Creando ticket…', 'success'); 
+    this.cd.detectChanges(); 
 
     this.api.createTicket(this.ticket).subscribe({
       next: res => {
         this.loading = false;
         this.mostrarToast('Ticket creado correctamente', 'success');
         this.ticket = { titulo: '', descripcion: '', responsableId: null };
-        this.cd.detectChanges(); // ⬅ forzar UI otra vez
+        this.cd.detectChanges();
       },
       error: err => {
         this.loading = false;
         this.mostrarToast('Error al crear ticket', 'error');
         console.error('Error al crear ticket:', err);
-        this.cd.detectChanges(); // ⬅ forzar UI
+        this.cd.detectChanges(); 
       }
     });
   }

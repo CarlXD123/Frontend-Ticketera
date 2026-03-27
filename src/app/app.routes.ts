@@ -9,7 +9,6 @@ export const routes: Routes = [
   { path: '', component: Login },
   { path: 'register', component: Register },
 
-  // Rutas protegidas con layout
   {
     path: '',
     component: MainLayout,

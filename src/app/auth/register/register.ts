@@ -68,7 +68,6 @@ export class Register implements OnInit {
   register() {
     this.loading = true;
 
-    // 🔹 Guardar el roleId actual
     const currentRoleId = this.user.roleId;
 
     this.api.register(this.user).subscribe({
@@ -78,13 +77,13 @@ export class Register implements OnInit {
         // mostrar toast
         this.showToastMessage('Usuario registrado correctamente', 'success');
 
-        // limpiar solo los campos de texto, manteniendo el rol
+      
         this.user.nombre = '';
         this.user.email = '';
         this.user.password = '';
         this.user.roleId = currentRoleId;
 
-        this.cdr.detectChanges(); // forzar actualización de ngModel
+        this.cdr.detectChanges(); 
       },
       error: (err) => {
         this.loading = false;

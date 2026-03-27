@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api';
 
-// ✅ ENUM PRO
 export enum EstadoTicket {
   Nuevo = 0,
   EnProceso = 1,
@@ -60,9 +59,7 @@ export class TaskList implements OnInit {
     this.loadUsuarios();
   }
 
-  // =========================
-  // 🔥 FIX CLAVE
-  // =========================
+
   mapEstadoToNumber(estado: any): number {
     switch (estado) {
       case 'Nuevo': return 0;
@@ -86,11 +83,11 @@ export class TaskList implements OnInit {
     this.api.getTickets().subscribe({
       next: (data: any) => {
 
-        console.log('DATA API:', data); // 👈 debug
+        console.log('DATA API:', data); 
 
         this.tasks = data.map((t: any) => ({
           ...t,
-          estado: this.mapEstadoToNumber(t.estado), // 👈 FIX
+          estado: this.mapEstadoToNumber(t.estado),
           responsableNombre: t.responsableNombre || `Usuario ${t.responsableId}`
         }));
 
@@ -237,25 +234,24 @@ export class TaskList implements OnInit {
 
     console.log('ENVIANDO:', payload);
 
-    // 🔥 opcional: UI inmediata (puedes dejarlo o quitarlo)
     this.updateLocalTask(task);
 
     this.api.updateTicket(task.id, payload).subscribe({
       next: () => {
         console.log('OK');
 
-        // 💣 FORZAMOS REFRESH TOTAL
+     
         this.selectedTask = null;
         this.tasks = [];
         this.tasksByStatus = {};
 
         setTimeout(() => {
-          this.loadTickets(); // 🔥 recarga real desde backend
+          this.loadTickets(); 
         }, 50);
       },
       error: (err) => {
         console.log('ERROR BACKEND:', err.error.errors);
-        this.loadTickets(); // rollback total
+        this.loadTickets(); 
       }
     });
   }
