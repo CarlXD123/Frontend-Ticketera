@@ -1,0 +1,113 @@
+<div class="tasks-container">
+
+  <div class="tasks-header">
+    <h2>📋 Equipo Desarrollo (ED)</h2>
+
+    <div class="filters">
+      <input 
+        type="text" 
+        placeholder="Buscar tarea..." 
+        [(ngModel)]="searchTerm"
+        (input)="applyFilters()"
+      />
+      <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+        <option [ngValue]="null">Todos</option>
+        <option [ngValue]="0">Nuevo</option>
+        <option [ngValue]="1">En Proceso</option>
+        <option [ngValue]="2">Resuelto</option>
+        <option [ngValue]="3">Cancelado</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="kanban-board">
+
+    <div class="kanban-column" *ngFor="let status of statuses">
+
+      <!-- HEADER DE COLUMNA -->
+      <div class="column-header">
+        <span class="column-title">{{ status.label }}</span>
+        <span class="task-count">
+          {{ getTaskCount(status.value) }}
+        </span>
+      </div>
+
+      <!-- TARJETAS -->
+      <div class="column-content">
+        <div class="task-card" 
+             *ngFor="let task of getTasksForColumn(status.value)"
+              (click)="selectedTask = task">
+          <div class="task-title">{{ task.titulo }}</div>
+          <div class="task-meta">
+            <span class="assignee">👤 {{ task.responsableNombre }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGINACIÓN POR COLUMNA -->
+      <div class="column-footer" *ngIf="getTaskCount(status.value) > pageSize">
+        <button (click)="prevPage(status.value)" [disabled]="columnPages[status.value] === 1">⬅</button>
+        <span>Página {{ columnPages[status.value] }}</span>
+        <button 
+          (click)="nextPage(status.value)" 
+          [disabled]="columnPages[status.value] >= maxPage(status.value)"
+        >➡</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- PANEL DETALLE (MODAL) -->
+  <div class="task-detail-overlay" *ngIf="selectedTask">
+    <div class="task-detail-card">
+      <div class="detail-header">
+        <h3>Editar Ticket</h3>
+        <button class="close-btn" (click)="closeDetail()">✖</button>
+      </div>
+
+      <div class="detail-body">
+        <label>Título:</label>
+        <input type="text" [(ngModel)]="selectedTask.titulo" />
+
+        <label>Descripción:</label>
+        <textarea [(ngModel)]="selectedTask.descripcion"></textarea>
+
+        <label>Responsable:</label>
+        <select [(ngModel)]="selectedTask.responsableId">
+          <option *ngFor="let u of usuarios" [value]="u.id">
+            {{ u.nombre }}
+          </option>
+        </select>
+
+        <label>Estado:</label>
+        <select [(ngModel)]="selectedTask.estado">
+          <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
+        </select>
+      </div>
+
+      <div class="detail-footer">
+        <button *ngIf="selectedTask" class="save-btn" (click)="saveTask()">💾 Guardar</button>
+        <button class="cancel-btn" (click)="closeDetail()">Cancelar</button>
+        <button class="delete-btn" (click)="confirmDeleteTask()">🗑 Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" *ngIf="showDeleteModal">
+    <div class="modal-card">
+      <h3>⚠️ Eliminar Ticket</h3>
+      <p>¿Seguro que deseas eliminar este ticket?</p>
+
+      <div class="modal-actions">
+        <button class="cancel-btn" (click)="showDeleteModal = false">
+          Cancelar
+        </button>
+        <button class="delete-btn" (click)="deleteTaskConfirmed()">
+          🗑 Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

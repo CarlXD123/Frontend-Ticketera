@@ -1,0 +1,59 @@
+<app-topbar></app-topbar>
+
+<div class="register-page">
+
+  <div class="register-card">
+
+    <h2>Crear usuario</h2>
+    <p class="subtitle">Registrar nuevo usuario en el sistema</p>
+
+    <!-- NOMBRE -->
+    <div class="input-group">
+      <label>Nombre completo</label>
+      <input type="text" [(ngModel)]="user.nombre" placeholder="Ej: Juan Pérez">
+    </div>
+
+    <!-- EMAIL -->
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" [(ngModel)]="user.email" placeholder="usuario@empresa.com">
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="input-group password-group">
+      <label>Contraseña</label>
+      <input 
+        [type]="showPassword ? 'text' : 'password'" 
+        [(ngModel)]="user.password" 
+        placeholder="Asignar contraseña">
+      
+      <span class="toggle-password" (click)="togglePassword()">
+        {{ showPassword ? '🙈' : '👁️' }}
+      </span>
+    </div>
+
+    <!-- ROL -->
+    <div class="input-group" *ngIf="roles.length">
+      <label>Rol</label>
+      <select [(ngModel)]="user.roleId">
+        <option *ngFor="let r of roles" [value]="r.id">{{ r.nombre }}</option>
+      </select>
+    </div>
+
+    <!-- BOTÓN -->
+    <button 
+      class="btn-primary" 
+      (click)="register()"
+      [disabled]="!user.nombre || !user.email || !user.password || loading"
+    >
+      {{ loading ? 'Registrando...' : 'Crear usuario' }}
+    </button>
+
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" [ngClass]="{'show': showToast, 'success': toastType==='success', 'error': toastType==='error'}">
+    {{ toastMessage }}
+  </div>
+
+</div>

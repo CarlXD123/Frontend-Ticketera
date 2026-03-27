@@ -1,0 +1,38 @@
+<div class="topbar">
+
+  <!-- IZQUIERDA -->
+  <div class="topbar-left">
+    <span class="logo">🗂️ Ticketera virtual</span>
+  </div>
+
+  <!-- DERECHA -->
+  <div class="topbar-right">
+
+    <!-- ⚙️ BOTÓN PARA TOGGLE -->
+    <div class="menu-container">
+      <button class="icon-btn" (click)="toggleMenu()">⚙️</button>
+
+      <!-- DROPDOWN -->
+      <div class="dropdown" *ngIf="menuOpen">
+        <!-- Solo mostrar si NO estamos en /tasks -->
+        <button *ngIf="showTasksButton()" (click)="goToTasks()">📋 Volver al tablero</button>
+
+        <!-- Botón Crear usuario -->
+        <button (click)="goToRegister()">➕ Crear usuario</button>
+
+        <!-- Crear ticket -->
+        <button (click)="openCreateTicket()">📝 Crear ticket</button>
+        
+        <button (click)="logout()">🚪 Cerrar sesión</button>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="profile">
+      <img [src]="user.avatar" alt="perfil">
+      <span>{{ user.name }}</span>
+    </div>
+
+  </div>
+
+</div>

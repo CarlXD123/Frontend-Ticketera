@@ -1,0 +1,66 @@
+.ticket-page {
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.ticket-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+input, textarea, select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+button.btn-primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2b7ed7;
+  color: white;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+button.btn-primary:disabled {
+  background-color: #8cbce6;
+  cursor: not-allowed;
+}
+
+/* TOAST */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1000;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.toast.success {
+  background-color: #4caf50;
+}
+
+.toast.error {
+  background-color: #f44336;
+}

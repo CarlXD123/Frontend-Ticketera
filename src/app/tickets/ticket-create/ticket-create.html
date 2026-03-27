@@ -1,0 +1,59 @@
+<div class="ticket-create-card">
+
+  <!-- ENCABEZADO -->
+  <h2>📝 Crear Ticket</h2>
+  <p class="subtitle">Llena los datos para crear un nuevo ticket</p>
+
+
+  <!-- TÍTULO -->
+  <div class="input-group">
+    <label for="title">Título</label>
+    <input 
+      id="title" 
+      type="text" 
+      [(ngModel)]="ticket.titulo" 
+      placeholder="Ej: Error en login" 
+    />
+  </div>
+
+
+  <!-- DESCRIPCIÓN -->
+  <div class="input-group">
+    <label for="description">Descripción</label>
+    <textarea 
+      id="description" 
+      [(ngModel)]="ticket.descripcion" 
+      placeholder="Describe el problema con detalles"
+    ></textarea>
+  </div>
+
+
+  <!-- ASIGNAR A -->
+  <div class="input-group">
+    <label for="assignee">Asignar a</label>
+    <select id="assignee" [(ngModel)]="ticket.responsableId">
+      <option value="">-- Selecciona un usuario --</option>
+      <option *ngFor="let u of usuarios" [value]="u.id">{{ u.nombre }}</option>
+    </select>
+  </div>
+
+
+  <!-- BOTÓN CREAR -->
+  <button 
+    class="btn-primary" 
+    (click)="crearTicket()" 
+    [disabled]="loading || !ticket.titulo || !ticket.responsableId"
+  >
+    {{ loading ? 'Creando...' : 'Crear Ticket' }}
+  </button>
+
+
+  <!-- TOAST -->
+  <div 
+    class="toast" 
+    [ngClass]="{'show': showToast, 'success': toastType==='success', 'error': toastType==='error'}"
+  >
+    {{ toastMessage }}
+  </div>
+
+</div>

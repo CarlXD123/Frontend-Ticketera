@@ -1,0 +1,30 @@
+<!-- task-detail.html -->
+<div class="task-detail-card" *ngIf="task">
+  <h2>Editar Ticket #{{ task.id }}</h2>
+
+  <div class="input-group">
+    <label>Título:</label>
+    <input type="text" [(ngModel)]="task.titulo" />
+  </div>
+
+  <div class="input-group">
+    <label>Descripción:</label>
+    <textarea [(ngModel)]="task.descripcion"></textarea>
+  </div>
+
+  <div class="input-group">
+    <label>Estado:</label>
+    <select [(ngModel)]="task.estado">
+      <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+    </select>
+  </div>
+
+  <div class="input-group">
+    <label>Responsable:</label>
+    <input type="text" [(ngModel)]="task.responsableNombre" disabled />
+  </div>
+
+  <button (click)="actualizarTicket()" [disabled]="loading">
+    {{ loading ? 'Guardando...' : 'Guardar cambios' }}
+  </button>
+</div>

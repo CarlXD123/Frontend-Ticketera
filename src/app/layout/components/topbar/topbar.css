@@ -1,0 +1,87 @@
+.topbar {
+  height: 60px;
+  width: 100%;
+  background-color: #172b4d;
+  color: white;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* LEFT */
+.topbar-left .logo {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* RIGHT */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* ICON BUTTONS */
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.icon-btn:hover {
+  transform: scale(1.2);
+}
+
+/* PROFILE */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.profile img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.profile span {
+  font-size: 14px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  z-index: 100;
+}
+
+.dropdown button {
+  padding: 10px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: #f5f5f5;
+}
+
+.menu-container {
+  position: relative;
+}

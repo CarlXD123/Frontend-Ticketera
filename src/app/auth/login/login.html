@@ -1,0 +1,39 @@
+<div class="login-wrapper">
+  <div class="login-box">
+
+    <div class="logo">🧩</div>
+    <h2>Inicia sesión</h2>
+    <p class="subtitle">Usa tu cuenta para continuar</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+      <div class="form-group">
+        <input 
+          type="email" 
+          placeholder="Correo electrónico"
+          formControlName="email" 
+        />
+        <small *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          Ingresa un email válido
+        </small>
+      </div>
+
+      <div class="form-group">
+        <input 
+          type="password" 
+          placeholder="Contraseña"
+          formControlName="password" 
+        />
+        <small *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          La contraseña es obligatoria
+        </small>
+      </div>
+
+      <button type="submit" [disabled]="loginForm.invalid">
+        Ingresar
+      </button>
+
+    </form>
+
+  </div>
+</div>
