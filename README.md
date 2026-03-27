@@ -21,6 +21,14 @@ HTML / CSS
 ✅ npm install 
 ✅ ng serve
 
+Si hubiera tenido mas tiempo
+
+Hubiera colocado la funcion de colocar comentarios en los tickets y ver que persona lo coloco tipo Jira.
+
+Decisiones tecnicas
+
+- Opte por forzar la carga en angular porque la sincronizacion en la vista no era en tiempo real.
+
 Capturas de pantalla
 
 ![alt text](image.png)
