@@ -26,6 +26,12 @@ export class TaskList implements OnInit {
   // =========================
   tasks: any[] = [];
   usuarios: any[] = [];
+  comentarios: any[] = [];
+  loadingComentarios: { [key: number]: boolean } = {};
+  comentariosPorTicket: { [key: number]: any[] } = {};
+  comentarioEditandoId: number | null = null;
+  textoEditando: string = '';
+  nuevoComentario: string = '';
   tasksByStatus: { [key: number]: any[] } = {};
   selectedTask: any = null;
 
@@ -36,6 +42,7 @@ export class TaskList implements OnInit {
   statusFilter: number | null = null;
   showDeleteModal = false;
   taskToDeleteId: number | null = null;
+  userFilter: number | null = null;
 
   // =========================
   // PAGINACIÓN
@@ -54,11 +61,19 @@ export class TaskList implements OnInit {
   ];
 
   ngOnInit() {
-    this.statuses.forEach(s => this.columnPages[s.value] = 1);
-    this.loadTickets();
-    this.loadUsuarios();
-  }
+    console.log('🔥 COMPONENTE INICIADO');
+    const token = localStorage.getItem('token');
 
+    console.log(token)
+
+    if (!token) {
+      console.log('No hay token, redirigir a login');
+      return;
+    }
+
+    this.loadUsuarios();
+    this.loadTickets();
+  }
 
   mapEstadoToNumber(estado: any): number {
     switch (estado) {
@@ -80,10 +95,19 @@ export class TaskList implements OnInit {
   // CARGA API
   // =========================
   loadTickets() {
+    const savedTaskId = localStorage.getItem('selectedTaskId');
+
     this.api.getTickets().subscribe({
       next: (data: any) => {
 
-        console.log('DATA API:', data); 
+        console.log('📦 DATA BACKEND:', data);
+
+        // 🔥 PROTECCIÓN
+        if (!Array.isArray(data)) {
+          console.error('❌ DATA NO ES ARRAY:', data);
+          this.tasks = [];
+          return;
+        }
 
         this.tasks = data.map((t: any) => ({
           ...t,
@@ -92,9 +116,45 @@ export class TaskList implements OnInit {
         }));
 
         this.applyFilters();
+
+        if (savedTaskId) {
+          const id = Number(savedTaskId);
+          const task = this.tasks.find(t => Number(t.id) === id);
+
+          if (task) {
+            this.selectedTask = task;
+
+            if (!this.comentariosPorTicket[id]) {
+              this.loadComentarios(id);
+            }
+          }
+        }
+
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error cargando tickets', err)
+
+      error: (err) => {
+        console.error('❌ ERROR CARGANDO TICKETS:', err);
+      }
+    });
+  }
+
+  loadComentarios(ticketId: number) {
+    console.log(this.comentariosPorTicket)
+    // 🔥 evita doble llamada
+    if (this.loadingComentarios[ticketId]) return;
+
+    this.loadingComentarios[ticketId] = true;
+
+    this.api.getComentarios(ticketId).subscribe({
+      next: (data: any) => {
+        this.comentariosPorTicket[ticketId] = data || [];
+        this.loadingComentarios[ticketId] = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.loadingComentarios[ticketId] = false;
+      }
     });
   }
 
@@ -103,17 +163,30 @@ export class TaskList implements OnInit {
   // =========================
   applyFilters() {
     const filtered = this.tasks.filter(task => {
-      const matchesSearch = task.titulo?.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchesStatus = this.statusFilter !== null ? task.estado === this.statusFilter : true;
-      return matchesSearch && matchesStatus;
+
+      const matchesSearch =
+        task.titulo?.toLowerCase().includes(this.searchTerm.toLowerCase());
+
+      const matchesStatus =
+        this.statusFilter !== null ? task.estado === this.statusFilter : true;
+
+      const matchesUser =
+        this.userFilter !== null ? task.responsableId === this.userFilter : true;
+
+      return matchesSearch && matchesStatus && matchesUser;
     });
 
-    this.tasksByStatus = this.statuses.reduce((acc, status) => {
-      acc[status.value] = filtered.filter(t => t.estado === status.value);
-      return acc;
-    }, {} as { [key: number]: any[] });
+    const newTasksByStatus: { [key: number]: any[] } = {};
 
-    this.statuses.forEach(s => this.columnPages[s.value] = 1);
+    this.statuses.forEach(status => {
+      newTasksByStatus[status.value] =
+        filtered.filter(t => t.estado === status.value);
+
+      this.columnPages[status.value] = 1;
+    });
+
+    this.tasksByStatus = newTasksByStatus;
+
     this.cdr.detectChanges();
   }
 
@@ -169,11 +242,18 @@ export class TaskList implements OnInit {
   }
 
   openDetail(task: any) {
-    this.selectedTask = { ...task }; // 🔥 CLAVE
-  }
+    this.selectedTask = { ...task };
 
+    localStorage.setItem('selectedTaskId', task.id);
+
+    // 🔥 SOLO carga si NO existe en cache
+    if (!this.comentariosPorTicket[task.id]) {
+      this.loadComentarios(task.id);
+    }
+  }
   closeDetail() {
     this.selectedTask = null;
+    localStorage.removeItem('selectedTaskId');
   }
 
   // =========================
@@ -232,26 +312,20 @@ export class TaskList implements OnInit {
       estado: Number(task.estado)
     };
 
-    console.log('ENVIANDO:', payload);
-
     this.updateLocalTask(task);
+
+    // 🔥 cerrar modal BIEN
+    this.selectedTask = null;
+    localStorage.removeItem('selectedTaskId');
 
     this.api.updateTicket(task.id, payload).subscribe({
       next: () => {
         console.log('OK');
-
-     
-        this.selectedTask = null;
-        this.tasks = [];
-        this.tasksByStatus = {};
-
-        setTimeout(() => {
-          this.loadTickets(); 
-        }, 50);
+        this.loadTickets(); // ya no reabre
       },
       error: (err) => {
-        console.log('ERROR BACKEND:', err.error.errors);
-        this.loadTickets(); 
+        console.log('ERROR BACKEND:', err);
+        this.loadTickets();
       }
     });
   }
@@ -282,5 +356,69 @@ export class TaskList implements OnInit {
         alert('No se pudo eliminar');
       }
     });
+  }
+
+  agregarComentario() {
+    if (!this.nuevoComentario.trim() || !this.selectedTask) return;
+    console.log('TOKEN:', localStorage.getItem('token'));
+    const comentario = {
+      texto: this.nuevoComentario,
+      ticketId: this.selectedTask.id
+    };
+
+    this.api.createComentario(comentario).subscribe({
+      next: () => {
+        this.nuevoComentario = '';
+        this.loadComentarios(this.selectedTask.id); 
+      },
+      error: (err) => {
+        console.log('STATUS:', err.status);
+        console.log('ERROR BODY:', err.error);
+        console.log('FULL ERROR:', err);
+      }
+    });
+  }
+
+  eliminarComentario(id: number) {
+    this.api.deleteComentario(id).subscribe({
+      next: () => {
+        this.loadComentarios(this.selectedTask.id);
+      }
+    });
+  }
+
+  editarComentario(c: any) {
+    this.comentarioEditandoId = c.id;
+    this.textoEditando = c.texto;
+  }
+
+  guardarComentarioEditado(c: any) {
+    const payload = {
+      texto: this.textoEditando
+    };
+
+    this.api.updateComentario(c.id, payload).subscribe({
+      next: () => {
+
+        const ticketId = this.selectedTask.id;
+
+        this.comentariosPorTicket[ticketId] =
+          this.comentariosPorTicket[ticketId].map((item: any) =>
+            item.id === c.id
+              ? { ...item, texto: this.textoEditando } // ✅ nuevo objeto
+              : item
+          );
+
+        this.comentarioEditandoId = null;
+        this.textoEditando = '';
+
+        this.cdr.detectChanges(); // 🔥 fuerza refresco inmediato
+      }
+    });
+  }
+
+  cancelarEdicion() {
+    this.comentarioEditandoId = null;
+    this.textoEditando = '';
   }
 }

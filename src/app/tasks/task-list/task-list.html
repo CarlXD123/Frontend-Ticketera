@@ -17,6 +17,14 @@
         <option [ngValue]="2">Resuelto</option>
         <option [ngValue]="3">Cancelado</option>
       </select>
+
+      <select [(ngModel)]="userFilter" (change)="applyFilters()">
+        <option [ngValue]="null">Todos los usuarios</option>
+        <option *ngFor="let u of usuarios" [ngValue]="u.id">
+          {{ u.nombre }}
+        </option>
+      </select>
+
     </div>
   </div>
 
@@ -36,7 +44,7 @@
       <div class="column-content">
         <div class="task-card" 
              *ngFor="let task of getTasksForColumn(status.value)"
-              (click)="selectedTask = task">
+              (click)="openDetail(task)">
           <div class="task-title">{{ task.titulo }}</div>
           <div class="task-meta">
             <span class="assignee">👤 {{ task.responsableNombre }}</span>
@@ -85,6 +93,68 @@
           <option *ngFor="let s of statuses" [value]="s.value">{{ s.label }}</option>
         </select>
       </div>
+
+
+      <h4>💬 Comentarios</h4>
+
+      <div class="comentarios-container">
+
+        <!-- SIN COMENTARIOS -->
+        <div *ngIf="!loadingComentarios[selectedTask?.id] && (comentariosPorTicket[selectedTask?.id] || []).length === 0">
+          <small>No hay comentarios</small>
+        </div>
+            
+        <div *ngFor="let c of comentariosPorTicket[selectedTask?.id] || []" class="comentario">
+
+          <!-- MODO NORMAL -->
+          <div *ngIf="comentarioEditandoId !== c.id">
+
+             <!-- 🔥 USUARIO -->
+            <div class="comentario-header">
+              <strong>{{ c.usuarioNombre || 'Usuario' }}</strong>
+            </div>
+            
+            <div class="comentario-texto">
+              {{ c.texto }}
+            </div>
+
+            <div class="comentario-footer">
+              <small>{{ c.fechaCreacion | date:'short' }}</small>
+
+              <button (click)="editarComentario(c)">✏️</button>
+              <button (click)="eliminarComentario(c.id)">❌</button>
+            </div>
+
+          </div>
+
+          <!-- MODO EDICIÓN -->
+          <div *ngIf="comentarioEditandoId === c.id">
+
+            <input [(ngModel)]="textoEditando" />
+
+            <div class="comentario-footer">
+              <button (click)="guardarComentarioEditado(c)">💾</button>
+              <button (click)="cancelarEdicion()">❌</button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- input -->
+      <div class="comentario-input">
+        <input 
+          type="text" 
+          [(ngModel)]="nuevoComentario" 
+          placeholder="Escribe un comentario..."
+        />
+
+        <button (click)="agregarComentario()">Enviar</button>
+      </div>
+      
+      <hr />
 
       <div class="detail-footer">
         <button *ngIf="selectedTask" class="save-btn" (click)="saveTask()">💾 Guardar</button>

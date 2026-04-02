@@ -14,7 +14,7 @@
         <button *ngIf="showTasksButton()" (click)="goToTasks()">📋 Volver al tablero</button>
 
         <!-- Botón Crear usuario -->
-        <button (click)="goToRegister()">➕ Crear usuario</button>
+        <button *ngIf="user.role === 'Admin'" (click)="goToRegister()">➕ Crear usuario</button>
 
         <!-- Crear ticket -->
         <button (click)="openCreateTicket()">📝 Crear ticket</button>

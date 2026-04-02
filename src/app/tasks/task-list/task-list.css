@@ -216,3 +216,27 @@
   display: flex;
   justify-content: space-between;
 }
+
+.comentarios-container {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.comentario {
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.comentario-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.comentario-input {
+  display: flex;
+  gap: 5px;
+}

@@ -59,5 +59,29 @@ export class ApiService {
   getUsuarios(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/usuario/list`);
   }
+
+  // 💬 OBTENER COMENTARIOS POR TICKET
+  getComentarios(ticketId: number) {
+    return this.http.get(`${this.baseUrl}/comentario/ticket/${ticketId}`, this.authHeaders());
+  }
+
+  // ➕ CREAR COMENTARIO
+  createComentario(comentario: any) {
+    return this.http.post(`${this.baseUrl}/comentario`, comentario, this.authHeaders());
+  }
+
+  // ❌ ELIMINAR COMENTARIO
+  deleteComentario(id: number) {
+    return this.http.delete(`${this.baseUrl}/comentario/${id}`, this.authHeaders());
+  }
+
+  // ✏️ ACTUALIZAR COMENTARIO
+  updateComentario(id: number, comentario: any) {
+    return this.http.put(
+      `${this.baseUrl}/comentario/${id}`,
+      comentario,
+      this.authHeaders()
+    );
+  }
   
 }

@@ -13,7 +13,8 @@ export class TopbarComponent implements OnInit {
 
   user = {
     name: 'Usuario',
-    avatar: ''
+    avatar: '',
+    role: ''
   };
 
   menuOpen = false;
@@ -30,10 +31,13 @@ export class TopbarComponent implements OnInit {
 
     // Decodificar JWT
     const payload = this.parseJwt(token);
+    console.log(payload)
     const username = payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] || 'Usuario';
+    const role = payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || 'User';
     const firstLetter = username.charAt(0).toUpperCase();
 
     this.user.name = username;
+    this.user.role = role;
     this.user.avatar = `https://ui-avatars.com/api/?name=${firstLetter}&background=random`;
   }
 
