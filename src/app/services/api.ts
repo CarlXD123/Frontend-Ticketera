@@ -1,6 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { LoginRequest } from '../models/login-request.model';
+import { LoginResponse } from '../models/login-response.model';
+import { CrearTicketRequest } from '../models/crear-ticket.model';
+import { UpdateTicketRequest } from '../models/update-ticket.model';
+import { RegisterUserRequest } from '../models/register-user.model';
+import { User } from '../models/user.model';
+import { CreateCommentRequest } from '../models/create-comment.model';
+import { Comment } from '../models/comentario.model';
+import { UpdateCommentRequest } from '../models/update-comment.model';
+import { UpdateCommentResponse } from '../models/update-comment-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +22,11 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // 🔐 LOGIN
-  login(data: any) {
-    return this.http.post(`${this.baseUrl}/usuario/login`, data);
+  login(data: LoginRequest) {
+    return this.http.post<LoginResponse>(
+      `${this.baseUrl}/usuario/login`,
+      data
+    );
   }
 
   private authHeaders() {
@@ -31,13 +44,21 @@ export class ApiService {
   }
 
   // ➕ CREAR TICKET
-  createTicket(ticket: any) {
-    return this.http.post(`${this.baseUrl}/ticket`, ticket, this.authHeaders());
+  createTicket(ticket: CrearTicketRequest) {
+    return this.http.post(
+      `${this.baseUrl}/ticket`,
+      ticket,
+      this.authHeaders()
+    );
   }
 
   // ✏️ ACTUALIZAR TICKET
-  updateTicket(id: number, ticket: any) {
-    return this.http.put(`${this.baseUrl}/ticket/${id}`, ticket, this.authHeaders());
+  updateTicket(id: number, ticket: UpdateTicketRequest) {
+    return this.http.put(
+      `${this.baseUrl}/ticket/${id}`,
+      ticket,
+      this.authHeaders()
+    );
   }
 
   // ❌ ELIMINAR TICKET
@@ -46,8 +67,12 @@ export class ApiService {
   }
 
   // 🧑‍💻 REGISTRAR USUARIO
-  register(data: any) {
-    return this.http.post(`${this.baseUrl}/usuario/register`, data, this.authHeaders());
+  register(data: RegisterUserRequest) {
+    return this.http.post<User>(
+      `${this.baseUrl}/usuario/register`,
+      data,
+      this.authHeaders()
+    );
   }
 
   // 🎭 OBTENER TODOS LOS ROLES
@@ -66,8 +91,12 @@ export class ApiService {
   }
 
   // ➕ CREAR COMENTARIO
-  createComentario(comentario: any) {
-    return this.http.post(`${this.baseUrl}/comentario`, comentario, this.authHeaders());
+  createComentario(comentario: CreateCommentRequest) {
+    return this.http.post<Comment>(
+      `${this.baseUrl}/comentario`,
+      comentario,
+      this.authHeaders()
+    );
   }
 
   // ❌ ELIMINAR COMENTARIO
@@ -76,8 +105,8 @@ export class ApiService {
   }
 
   // ✏️ ACTUALIZAR COMENTARIO
-  updateComentario(id: number, comentario: any) {
-    return this.http.put(
+  updateComentario(id: number, comentario: UpdateCommentRequest) {
+    return this.http.put<UpdateCommentResponse>(
       `${this.baseUrl}/comentario/${id}`,
       comentario,
       this.authHeaders()
